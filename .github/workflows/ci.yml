@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: phlex/setup
+      - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
@@ -25,7 +25,7 @@ jobs:
         run: gem update --system
 
       - name: Install dependencies
-        run: bundle install
+        run: bundle install --jobs 4
 
       - name: Appraisals install
         run: bundle exec appraisal install
@@ -34,18 +34,14 @@ jobs:
         run: bundle exec appraisal rspec
 
   rubocop:
-        runs-on: 'ubuntu-latest'
-        steps:
-          - uses: actions/checkout@v4
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v4
 
-          - name: Setup
-            uses: ruby/setup-ruby@v1
-            with:
-              ruby-version: '3.1'
-              bundler-cache: false
+      - name: Setup Ruby & Install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: false
 
-          - name: Install dependencies
-            run: bundle install
-
-          - name: Rubocop
-            run: bundle exec rubocop
+      - name: Rubocop
+        run: bundle exec rubocop
